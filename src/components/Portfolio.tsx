@@ -46,6 +46,11 @@ export const Portfolio: React.FC<PortfolioProps> = ({ projects = [], onUpdatePro
   // Direct multi-file batch upload input ref
   const batchUploadInputRef = useRef<HTMLInputElement>(null);
   const [isBatchUploading, setIsBatchUploading] = useState(false);
+
+  // Single project replace / upload input ref
+  const singleProjectUploadInputRef = useRef<HTMLInputElement>(null);
+  const [targetProjectIdForUpload, setTargetProjectIdForUpload] = useState<string | null>(null);
+
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const showToast = (msg: string) => {
@@ -242,6 +247,36 @@ export const Portfolio: React.FC<PortfolioProps> = ({ projects = [], onUpdatePro
     }
   };
 
+  // Single project replace / upload handler
+  const handleSingleProjectUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0 || !targetProjectIdForUpload || !onUpdateProjects) return;
+    const targetProject = projects.find((p) => p.id === targetProjectIdForUpload);
+    if (!targetProject) return;
+
+    try {
+      const urls: string[] = [];
+      for (let i = 0; i < files.length; i++) {
+        urls.push(await fileToDataUrl(files[i]));
+      }
+      const updated: Project = {
+        ...targetProject,
+        image: urls[0],
+        gallery: urls
+      };
+      handleSaveProject(updated);
+      showToast(`Uploaded ${urls.length} real image(s) for "${targetProject.title}"!`);
+    } catch (err) {
+      console.error('Error uploading project files', err);
+      showToast('Error uploading files. Please try again.');
+    } finally {
+      if (singleProjectUploadInputRef.current) {
+        singleProjectUploadInputRef.current.value = '';
+      }
+      setTargetProjectIdForUpload(null);
+    }
+  };
+
   return (
     <section
       id="portfolio"
@@ -259,6 +294,16 @@ export const Portfolio: React.FC<PortfolioProps> = ({ projects = [], onUpdatePro
         accept="image/*,video/*,application/pdf"
         className="hidden"
         onChange={handleBatchUpload}
+      />
+
+      {/* Hidden single project replace input */}
+      <input
+        ref={singleProjectUploadInputRef}
+        type="file"
+        multiple
+        accept="image/*"
+        className="hidden"
+        onChange={handleSingleProjectUpload}
       />
 
       <div className="max-w-7xl mx-auto px-6 sm:px-8">
@@ -698,10 +743,40 @@ export const Portfolio: React.FC<PortfolioProps> = ({ projects = [], onUpdatePro
                         )}
                       </div>
 
-                      {/* Top Right Action: Edit, Delete & Preview Buttons */}
+                      {/* Quick upload badge on Wrap & Roll or any project */}
+                      {onUpdateProjects && project.id === 'wrap-and-roll-branding-menu' && (
+                        <div className="absolute top-14 left-4 z-20">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setTargetProjectIdForUpload(project.id);
+                              setTimeout(() => singleProjectUploadInputRef.current?.click(), 50);
+                            }}
+                            className="px-3 py-1 rounded-full bg-black/90 hover:bg-[#360302] border border-[#520504] text-[10px] font-mono font-bold text-rose-200 hover:text-white transition-all flex items-center gap-1.5 shadow-lg cursor-pointer hover:scale-105"
+                          >
+                            <Upload className="w-3 h-3 text-[#a85250]" />
+                            <span>Upload Real Images</span>
+                          </button>
+                        </div>
+                      )}
+
+                      {/* Top Right Action: Upload Real Images, Edit, Delete & Preview Buttons */}
                       <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
                         {onUpdateProjects && (
                           <>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setTargetProjectIdForUpload(project.id);
+                                setTimeout(() => singleProjectUploadInputRef.current?.click(), 50);
+                              }}
+                              title="Upload your real project photos (JPG/PNG)"
+                              className="p-2 rounded-xl bg-black/80 hover:bg-[#360302] text-rose-200 hover:text-white border border-[#360302] hover:border-[#520504] transition-all shadow-md cursor-pointer hover:scale-110 flex items-center gap-1"
+                            >
+                              <Upload className="w-3.5 h-3.5" />
+                            </button>
                             <button
                               type="button"
                               onClick={(e) => handleOpenEditProject(e, project)}
@@ -850,6 +925,18 @@ export const Portfolio: React.FC<PortfolioProps> = ({ projects = [], onUpdatePro
                         <>
                           <button
                             type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setTargetProjectIdForUpload(project.id);
+                              setTimeout(() => singleProjectUploadInputRef.current?.click(), 50);
+                            }}
+                            title="Upload real project photos"
+                            className="p-1.5 rounded-lg bg-black hover:bg-[#360302] text-rose-200 hover:text-white border border-[#360302] transition-colors"
+                          >
+                            <Upload className="w-3 h-3" />
+                          </button>
+                          <button
+                            type="button"
                             onClick={(e) => handleOpenEditProject(e, project)}
                             className="p-1.5 rounded-lg bg-black hover:bg-[#360302] text-white border border-[#360302] transition-colors"
                           >
@@ -858,7 +945,7 @@ export const Portfolio: React.FC<PortfolioProps> = ({ projects = [], onUpdatePro
                           <button
                             type="button"
                             onClick={(e) => handleDeleteProject(project.id, e)}
-                            className="p-1.5 rounded-lg bg-black hover:bg-rose-950 text-neutral-400 hover:text-rose-200 border border-[#360302] transition-colors"
+                            className="p-1.5 rounded-lg bg-black hover:bg-rose-950 text-neutral-300 hover:text-rose-200 border border-[#360302] transition-colors"
                           >
                             <Trash2 className="w-3 h-3" />
                           </button>
@@ -946,6 +1033,18 @@ export const Portfolio: React.FC<PortfolioProps> = ({ projects = [], onUpdatePro
                             <>
                               <button
                                 type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setTargetProjectIdForUpload(project.id);
+                                  setTimeout(() => singleProjectUploadInputRef.current?.click(), 50);
+                                }}
+                                className="p-1.5 rounded-lg bg-neutral-900 hover:bg-[#360302] text-rose-200 hover:text-white transition-colors cursor-pointer"
+                                title="Upload real project photos"
+                              >
+                                <Upload className="w-3.5 h-3.5" />
+                              </button>
+                              <button
+                                type="button"
                                 onClick={(e) => handleOpenEditProject(e, project)}
                                 className="p-1.5 rounded-lg bg-neutral-900 hover:bg-[#360302] text-white transition-colors cursor-pointer"
                                 title="Edit project"
@@ -1024,6 +1123,7 @@ export const Portfolio: React.FC<PortfolioProps> = ({ projects = [], onUpdatePro
                 }
               : undefined
           }
+          onUpdateProject={onUpdateProjects ? handleSaveProject : undefined}
         />
 
         {/* Edit / Upload Project Modal */}

@@ -8,6 +8,12 @@ import zenmartImg from '@/src/assets/images/portfolio_zenmart_store_179122845530
 import carouselsImg from '@/src/assets/images/portfolio_social_carousels_1791228467765.jpg';
 import auraImg from '@/src/assets/images/portfolio_aura_branding_1791268339092.jpg';
 import omniImg from '@/src/assets/images/portfolio_omni_ad_creative_1791268360269.jpg';
+import videoShowcaseSrc from '@/src/assets/videos/animated_video_editing_showcase.mp4';
+import videoPosterImg from '@/src/assets/images/animated_video_editing_poster_1791299679791.jpg';
+import videoMotionFrameImg from '@/src/assets/images/video_motion_graphics_frame_1791299697420.jpg';
+import wrapRollMainImg from '@/src/assets/images/wrap_roll_menu_showcase_1791300397087.jpg';
+import wrapRollSpreadImg from '@/src/assets/images/wrap_roll_menu_spread_1791300419974.jpg';
+import wrapRollSuiteImg from '@/src/assets/images/wrap_roll_branding_suite_1791300442298.jpg';
 
 export interface Project {
   id: string;
@@ -202,7 +208,68 @@ export const INITIAL_PORTFOLIO_DATA = {
     { name: 'Social Media Strategy', level: 95, category: 'Marketing' },
     { name: 'Creative Strategy', level: 92, category: 'Marketing' }
   ] as SkillItem[],
-  projects: [] as Project[],
+  projects: [
+    {
+      id: 'wrap-and-roll-branding-menu',
+      title: 'Wrap & Roll — Branding & Menu Book Design',
+      category: 'Branding',
+      tagline: 'Creating a bold and appetizing brand identity with a professional menu book design.',
+      image: wrapRollMainImg,
+      gallery: [wrapRollMainImg, wrapRollSpreadImg, wrapRollSuiteImg],
+      fileType: 'image',
+      featured: true,
+      aspect: 'wide',
+      overview:
+        'Designed a complete branding and menu book concept for Wrap & Roll, focusing on creating a modern, attractive, and food-focused visual identity. The project included professional layouts, typography, colors, food visuals, and menu presentation to create a consistent and engaging brand experience.',
+      challenge:
+        'How can a food brand be presented through a professional visual identity and menu design that looks attractive, communicates clearly, and makes the products more appealing to customers?',
+      solution:
+        'Developed a cohesive branding style with bold typography, balanced layouts, appealing food visuals, and a well-structured menu book. The design was created to make the menu easy to navigate while giving Wrap & Roll a memorable and professional brand presence.',
+      services: [
+        'Branding Design',
+        'Menu Book Design',
+        'Food Branding',
+        'Graphic Design',
+        'Typography',
+        'Layout Design',
+        'Promotional Design'
+      ],
+      tools: ['Adobe Photoshop', 'Adobe Illustrator', 'Canva'],
+      outcome:
+        'Created a professional and visually appealing branding and menu book design that presents Wrap & Roll’s products in an attractive, organized, and consistent way, helping strengthen the overall customer-facing brand experience.',
+      metricBadge: 'Food Branding & Menu Design',
+      client: 'Wrap & Roll',
+      year: '2026',
+      liveUrl: 'Private Project'
+    },
+    {
+      id: 'animated-video-editing-enhancement',
+      title: 'Animated Video Editing & Enhancement',
+      category: 'Video Editing',
+      tagline: 'Transforming raw footage into engaging animated visual content.',
+      image: videoShowcaseSrc,
+      gallery: [videoShowcaseSrc, videoPosterImg, videoMotionFrameImg],
+      fileType: 'video',
+      fileName: 'animated_video_editing_enhancement.mp4',
+      videoUrl: videoShowcaseSrc,
+      featured: true,
+      aspect: 'wide',
+      overview:
+        'The client provided the original video, which I transformed into an engaging animated edit using dynamic motion, smooth transitions, visual effects, and professional editing. The goal was to make the content more visually appealing, engaging, and suitable for digital platforms.',
+      challenge:
+        'How can raw video content be transformed into a more engaging and visually appealing experience?',
+      solution:
+        'Enhanced the original video with animation, motion effects, smooth transitions, and creative visual elements while maintaining the core content.',
+      services: ['Video Editing', 'Motion Graphics', 'Visual Effects (VFX)', 'Dynamic Motion & Pacing'],
+      tools: ['Wondershare Filmora', 'Adobe Premiere Pro', 'After Effects'],
+      outcome:
+        'Transformed the original footage into a polished, engaging animated video designed to capture attention and improve visual storytelling.',
+      metricBadge: 'Engaging Animated Content',
+      client: 'Confidential Client',
+      year: '2026',
+      liveUrl: 'Private Project'
+    }
+  ] as Project[],
   sampleProjects: [
     {
       id: 'aura-studio-identity',

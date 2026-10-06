@@ -47,9 +47,13 @@ export default function App() {
           'aesthetic-motion-ad'
         ]);
         const cleanedProjects = (loaded.projects || []).filter((p) => !demoIds.has(p.id));
+        const projectMap = new Map<string, any>();
+        INITIAL_PORTFOLIO_DATA.projects.forEach((p) => projectMap.set(p.id, p));
+        cleanedProjects.forEach((p) => projectMap.set(p.id, p));
+        const finalProjects = Array.from(projectMap.values());
         const cleanedData = {
           ...loaded,
-          projects: cleanedProjects
+          projects: finalProjects
         };
         setPortfolioData(cleanedData);
         savePortfolioToStorage(cleanedData);
